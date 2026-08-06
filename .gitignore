@@ -1,0 +1,4 @@
+.env
+colab1.py
+history.db
+__pycache__/
