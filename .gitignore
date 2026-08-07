@@ -3,3 +3,4 @@ colab1.py
 history.db
 __pycache__/
 .DS_Store
+.venv/

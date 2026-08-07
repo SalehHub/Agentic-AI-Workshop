@@ -5,18 +5,160 @@
 This workshop introduces agent design step by step using Python and the OpenAI
 Agents SDK. The first example creates a simple agent with one tool and no memory.
 The next example adds a persistent session so the agent can remember previous
-conversations.
+conversations. A third example adds tools for reading and renaming files.
 
-تقدم هذه الورشة تصميم الوكلاء الذكيين خطوة بخطوة باستخدام بايثون وOpenAI Agents
+تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
-التالي جلسة دائمة تمكّن الوكيل من تذكّر المحادثات السابقة.
+التالي جلسة دائمة تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
+أدوات لقراءة الملفات وإعادة تسميتها.
 
 ## Setup | الإعداد
 
-Before running the examples, make a copy of `.env.example` and name the copy
-`.env`:
+### 1. Install Python | تثبيت بايثون
 
-قبل تشغيل الأمثلة، أنشئ نسخة من ملف `.env.example` وغيّر اسم النسخة إلى `.env`:
+The [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) requires
+Python 3.10 or newer. Install the latest stable version of Python 3 for your
+operating system.
+
+تتطلب حزمة OpenAI Agents SDK الإصدار 3.10 من بايثون أو إصداراً أحدث. ثبّت أحدث
+إصدار مستقر من Python 3 لنظام التشغيل لديك.
+
+#### Windows | ويندوز
+
+1. Open the [Python downloads for Windows](https://www.python.org/downloads/windows/).
+2. Download the latest stable 64-bit installer and run it.
+3. Enable **Add Python to PATH** if the installer displays that option.
+4. Open PowerShell or Command Prompt and verify the installation:
+
+1. افتح صفحة [تنزيل بايثون لنظام ويندوز](https://www.python.org/downloads/windows/).
+2. نزّل أحدث إصدار مستقر بنواة 64 بت، ثم شغّل ملف التثبيت.
+3. فعّل خيار **Add Python to PATH** إذا ظهر في برنامج التثبيت.
+4. افتح PowerShell أو موجه الأوامر وتحقق من التثبيت:
+
+```powershell
+py --version
+```
+
+#### macOS | ماك
+
+1. Open the [Python downloads for macOS](https://www.python.org/downloads/macos/).
+2. Download and run the installer for the latest stable Python 3 release.
+3. Open Terminal and verify the installation:
+
+1. افتح صفحة [تنزيل بايثون لنظام macOS](https://www.python.org/downloads/macos/).
+2. نزّل برنامج تثبيت أحدث إصدار مستقر من Python 3 وشغّله.
+3. افتح الطرفية وتحقق من التثبيت:
+
+```bash
+python3 --version
+```
+
+### 2. Create a virtual environment | إنشاء بيئة افتراضية
+
+Open a terminal inside the workshop folder, then run the command for your system.
+A virtual environment keeps this project's packages separate from other Python
+projects.
+
+افتح الطرفية داخل مجلد الورشة، ثم نفّذ الأمر المناسب لنظامك. تحافظ البيئة
+الافتراضية على حزم هذا المشروع منفصلة عن مشاريع بايثون الأخرى.
+
+On Windows:
+
+على ويندوز:
+
+```powershell
+py -m venv .venv
+```
+
+On macOS:
+
+على macOS:
+
+```bash
+python3 -m venv .venv
+```
+
+### 3. Activate the virtual environment | تفعيل البيئة الافتراضية
+
+Activate the environment every time you open a new terminal for this project.
+
+فعّل البيئة في كل مرة تفتح فيها طرفية جديدة لهذا المشروع.
+
+Windows PowerShell | ويندوز PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks the activation script, run the following command once and
+then try activation again:
+
+إذا منع PowerShell تشغيل ملف التفعيل، نفّذ الأمر التالي مرة واحدة، ثم حاول
+التفعيل من جديد:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Windows Command Prompt | موجه أوامر ويندوز:
+
+```bat
+.venv\Scripts\activate.bat
+```
+
+macOS Terminal | طرفية macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+When activation succeeds, `(.venv)` usually appears at the beginning of the
+terminal prompt.
+
+عند نجاح التفعيل، تظهر عادةً كلمة `(.venv)` في بداية سطر الطرفية.
+
+### 4. Install the required packages | تثبيت الحزم المطلوبة
+
+With the virtual environment active, upgrade `pip` and install the packages from
+`requirements.txt`:
+
+بعد تفعيل البيئة الافتراضية، حدّث `pip` وثبّت الحزم الموجودة في ملف
+`requirements.txt`:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+The requirements file installs the OpenAI Agents SDK and `python-dotenv`.
+
+يثبّت ملف المتطلبات حزمة OpenAI Agents SDK وحزمة `python-dotenv`.
+
+### 5. Set the OpenAI API key | إعداد مفتاح OpenAI
+
+Make a copy of `.env.example` and name the copy `.env`.
+
+أنشئ نسخة من ملف `.env.example` وغيّر اسم النسخة إلى `.env`.
+
+On Windows PowerShell:
+
+على Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+On Windows Command Prompt:
+
+على موجه أوامر ويندوز:
+
+```bat
+copy .env.example .env
+```
+
+On macOS:
+
+على macOS:
 
 ```bash
 cp .env.example .env
@@ -35,6 +177,14 @@ committed.
 
 حافظ على سرية المفتاح. ملف `.env` مستبعد من Git ويجب عدم رفعه إلى المستودع.
 
+When you finish working, leave the virtual environment with:
+
+عند الانتهاء من العمل، اخرج من البيئة الافتراضية باستخدام:
+
+```bash
+deactivate
+```
+
 ## Python files | ملفات بايثون
 
 ### `agent.py`
@@ -52,7 +202,7 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python3 agent.py
+python agent.py
 ```
 
 ### `agent_session.py`
@@ -71,7 +221,27 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python3 agent_session.py
+python agent_session.py
+```
+
+### `agent_tools.py`
+
+This example keeps `list_folder` and adds two tools: `read_file` reads the content
+of a text file, and `rename_file` changes its name. The agent receives a folder
+path, reads each file, and gives it a short, descriptive name based on its content
+while preserving its extension and avoiding duplicate names.
+
+يحتفظ هذا المثال بأداة `list_folder` ويضيف أداتين: تقرأ `read_file` محتوى الملف
+النصي، وتغيّر `rename_file` اسمه. يستقبل الوكيل مسار مجلد، ويقرأ كل ملف، ثم
+يمنحه اسماً وصفياً مختصراً يناسب محتواه، مع الحفاظ على امتداده وتجنّب الأسماء
+المكررة.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_tools.py
 ```
 
 ### `hook.py`
