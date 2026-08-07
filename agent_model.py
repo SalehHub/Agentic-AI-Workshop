@@ -80,6 +80,7 @@ def rename_file(path: str, new_name: str) -> str:
 
 # Active configuration: choose a GPT-5.6 model and how much reasoning it uses.
 # الإعداد الفعّال: اختر نموذجاً من GPT-5.6 وحدد مقدار الاستدلال الذي يستخدمه.
+# https://developers.openai.com/api/docs/models
 SELECTED_MODEL = "gpt-5.6-sol"
 SELECTED_MODEL_SETTINGS = ModelSettings(
     reasoning=Reasoning(effort="medium"),
