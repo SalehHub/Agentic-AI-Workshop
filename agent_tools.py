@@ -83,18 +83,14 @@ def rename_file(path: str, new_name: str) -> str:
     return f"Renamed: {file.name} -> {new_file.name}"
 
 
-file_organizer_agent = Agent(
-    name="File Organizer",
+file_agent = Agent(
+    name="File Assistant",
     instructions=(
-        "The user will give you the path of a folder. "
-        "Your job is to rename the files in that folder based on their content. "
-        "First, use list_folder to find the files. "
-        "Use read_file to read each file before choosing its new name. "
-        "Use rename_file to give each file a short, descriptive name. "
-        "Always preserve the original file extension. "
-        "Do not rename folders or overwrite existing files. "
-        "Only work inside the folder provided by the user. "
-        "After finishing, summarize the old and new file names. "
+        "You help the user work with files and folders. "
+        "Understand the user's request and use the available tools to complete it. "
+        "Use only the tools that are available to you. "
+        "Never invent file names, file contents, or actions you did not perform. "
+        "After completing the request, briefly summarize what you did. "
     ),
     tools=[list_folder, read_file, rename_file],
 )
@@ -107,7 +103,7 @@ def main():
         if user_input.lower() in ["exit", "quit"]:
             break
 
-        result = Runner.run_sync(file_organizer_agent, user_input)
+        result = Runner.run_sync(file_agent, user_input)
         print(f"Agent: {result.final_output}\n")
 
 

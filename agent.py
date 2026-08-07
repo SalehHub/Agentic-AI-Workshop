@@ -40,12 +40,14 @@ def list_folder(path: str = ".") -> str:
 # exactly which Python functions it is allowed to call.
 # تحدد التعليمات دور الوكيل وضوابطه، بينما تحدد قائمة الأدوات بدقة دوال بايثون
 # التي يُسمح له باستدعائها.
-document_agent = Agent(
-    name="Document Assistant",
+file_agent = Agent(
+    name="File Assistant",
     instructions=(
-        "You help the user inspect files inside the folders. "
-        "Use list_folder to list the contents of a folder. "
-        "Never invent file names or file contents. "
+        "You help the user work with files and folders. "
+        "Understand the user's request and use the available tools to complete it. "
+        "Use only the tools that are available to you. "
+        "Never invent file names, file contents, or actions you did not perform. "
+        "After completing the request, briefly summarize what you did. "
     ),
     tools=[list_folder],
 )
@@ -64,7 +66,7 @@ def main():
         # is independent and the agent has no memory of earlier requests.
         # لا نمرر جلسة أو سجل محادثة هنا، لذلك يُعامل كل طلب بشكل مستقل، ولا
         # يتذكر الوكيل أي طلبات سابقة.
-        result = Runner.run_sync(document_agent, user_input)
+        result = Runner.run_sync(file_agent, user_input)
 
         print(f"Agent: {result.final_output}\n")
 

@@ -187,9 +187,17 @@ deactivate
 
 ## Python files | ملفات بايثون
 
+All agent examples use the same general `File Assistant` name and instructions.
+Only the `tools` list changes from one learning stage to the next, so the agent
+understands the user's request and uses whichever capabilities are available.
+
+تستخدم جميع أمثلة الوكيل الاسم العام `File Assistant` والتعليمات العامة نفسها.
+تتغير قائمة `tools` فقط من مرحلة تعليمية إلى أخرى، ليفهم الوكيل طلب المستخدم
+ويستخدم الإمكانات المتاحة له في كل مرحلة.
+
 ### `agent.py`
 
-The first agent-design example. It creates a document assistant with one tool,
+The first agent-design example. It creates a file assistant with one tool,
 `list_folder`, which lists the contents of a folder. Each request is independent,
 so this agent does not remember earlier conversations.
 
@@ -227,14 +235,14 @@ python agent_session.py
 ### `agent_tools.py`
 
 This example keeps `list_folder` and adds two tools: `read_file` reads the content
-of a text file, and `rename_file` changes its name. The agent receives a folder
-path, reads each file, and gives it a short, descriptive name based on its content
-while preserving its extension and avoiding duplicate names.
+of a text file, and `rename_file` changes its name. The agent can now handle both
+folder-listing requests and requests to read files and rename them based on their
+content, while preserving extensions and avoiding duplicate names.
 
 يحتفظ هذا المثال بأداة `list_folder` ويضيف أداتين: تقرأ `read_file` محتوى الملف
-النصي، وتغيّر `rename_file` اسمه. يستقبل الوكيل مسار مجلد، ويقرأ كل ملف، ثم
-يمنحه اسماً وصفياً مختصراً يناسب محتواه، مع الحفاظ على امتداده وتجنّب الأسماء
-المكررة.
+النصي، وتغيّر `rename_file` اسمه. يستطيع الوكيل الآن تنفيذ طلبات عرض محتويات
+المجلد، وكذلك قراءة الملفات وإعادة تسميتها بناءً على محتواها، مع الحفاظ على
+الامتدادات وتجنّب الأسماء المكررة.
 
 Run it with:
 

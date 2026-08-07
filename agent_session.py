@@ -44,12 +44,14 @@ session = SQLiteSession(
     db_path="history.db",
 )
 
-document_agent = Agent(
-    name="Document Assistant",
+file_agent = Agent(
+    name="File Assistant",
     instructions=(
-        "You help the user inspect files inside the folders. "  #
-        "Use list_folder to list the contents of a folder. "
-        "Never invent file names or file contents. "
+        "You help the user work with files and folders. "
+        "Understand the user's request and use the available tools to complete it. "
+        "Use only the tools that are available to you. "
+        "Never invent file names, file contents, or actions you did not perform. "
+        "After completing the request, briefly summarize what you did. "
     ),
     tools=[list_folder],
 )
@@ -67,7 +69,7 @@ def main():
         # For example, the agent can recall your name after you close and reopen it.
         # عند تمرير الجلسة، تُحمّل الرسائل السابقة وتُحفظ المحادثة الجديدة. لذلك
         # يمكن للوكيل تذكّر اسمك حتى بعد إغلاقه وتشغيله مرة أخرى.
-        result = Runner.run_sync(document_agent, user_input, session=session)
+        result = Runner.run_sync(file_agent, user_input, session=session)
 
         print(f"Agent: {result.final_output}\n")
 
