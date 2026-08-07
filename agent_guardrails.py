@@ -17,8 +17,6 @@ from agents import (
 )
 from agents.decorators import input_guardrail, output_guardrail, tool
 
-# Load API keys and other configuration from the local .env file.
-# تحميل مفاتيح الاتصال والإعدادات من ملف البيئة المحلي .env.
 load_dotenv()
 
 

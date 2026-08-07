@@ -12,8 +12,6 @@ from dotenv import load_dotenv
 from agents import Agent, Runner
 from agents.decorators import tool
 
-# Load API keys and other configuration from the local .env file.
-# تحميل مفاتيح الاتصال والإعدادات من ملف البيئة المحلي .env.
 load_dotenv()
 
 

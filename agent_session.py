@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 from agents import Agent, Runner, SQLiteSession
 from agents.decorators import tool
 
-# Load variables from the .env file.
 load_dotenv()
 
 
