@@ -6,11 +6,13 @@ This workshop introduces agent design step by step using Python and the OpenAI
 Agents SDK. The first example creates a simple agent with one tool and no memory.
 The next example adds a persistent session so the agent can remember previous
 conversations. A third example adds tools for reading and renaming files.
+A fourth example shows how to select a model and configure its behavior.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
 التالي جلسة دائمة تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
 أدوات لقراءة الملفات وإعادة تسميتها.
+ويوضح مثال رابع كيفية اختيار النموذج وضبط سلوكه.
 
 ## Setup | الإعداد
 
@@ -188,12 +190,13 @@ deactivate
 ## Python files | ملفات بايثون
 
 All agent examples use the same general `File Assistant` name and instructions.
-Only the `tools` list changes from one learning stage to the next, so the agent
-understands the user's request and uses whichever capabilities are available.
+The available tools change between learning stages, while later examples add one
+focused concept, such as sessions or model settings, without changing the general
+instructions.
 
 تستخدم جميع أمثلة الوكيل الاسم العام `File Assistant` والتعليمات العامة نفسها.
-تتغير قائمة `tools` فقط من مرحلة تعليمية إلى أخرى، ليفهم الوكيل طلب المستخدم
-ويستخدم الإمكانات المتاحة له في كل مرحلة.
+تتغير الأدوات المتاحة بين المراحل التعليمية، بينما تضيف الأمثلة اللاحقة مفهوماً
+محدداً، مثل الجلسات أو إعدادات النموذج، من دون تغيير التعليمات العامة.
 
 ### `agent.py`
 
@@ -250,6 +253,41 @@ Run it with:
 
 ```bash
 python agent_tools.py
+```
+
+### `agent_model.py`
+
+This example keeps the same tools and demonstrates two model configurations:
+
+- The active configuration selects `gpt-5.6-sol` and sets its reasoning effort
+  to `medium`.
+- The commented alternative selects `gpt-4.1` and sets `temperature=0.9` for
+  more varied and creative responses.
+
+The `model` value chooses the model. `reasoning.effort` controls how much
+reasoning a supported reasoning model performs. `temperature` controls output
+randomness and variation on models that support it. `frequency_penalty` is a
+different setting that discourages repeated words or phrases; it is not the
+creativity control. Not every model supports every setting.
+
+يحتفظ هذا المثال بالأدوات نفسها، ويوضح إعدادين للنموذج:
+
+- يختار الإعداد الفعّال `gpt-5.6-sol` ويضبط مستوى الاستدلال على `medium`.
+- يختار الإعداد البديل المكتوب كتعليق `gpt-4.1` ويضبط `temperature=0.9`
+  للحصول على إجابات أكثر تنوعاً وإبداعاً.
+
+تحدد قيمة `model` النموذج المستخدم. ويتحكم `reasoning.effort` في مقدار الاستدلال
+الذي يجريه النموذج الداعم لهذه الخاصية، بينما تتحكم `temperature` في عشوائية
+الإجابة وتنوعها لدى النماذج التي تدعمها. أما `frequency_penalty` فهو إعداد مختلف
+يقلل تكرار الكلمات أو العبارات، وليس إعداد الإبداع. لا تدعم جميع النماذج كل
+الإعدادات.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_model.py
 ```
 
 ### `hook.py`
