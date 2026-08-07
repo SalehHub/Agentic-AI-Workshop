@@ -1,3 +1,5 @@
+# Example Three | المثال الثالث
+
 # This example adds two tools to the first agent: one reads file contents, and
 # the other renames files. The agent uses all three tools to organize a folder.
 # يضيف هذا المثال أداتين إلى الوكيل الأول: أداة لقراءة محتوى الملفات، وأخرى

@@ -1,3 +1,5 @@
+# Example Four | المثال الرابع
+
 # This example builds on agent_tools.py and shows how to select a model and
 # configure its behavior with ModelSettings.
 # يعتمد هذا المثال على agent_tools.py ويوضح كيفية اختيار النموذج وضبط سلوكه

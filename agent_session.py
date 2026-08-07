@@ -1,3 +1,5 @@
+# Example Two | المثال الثاني
+
 # This example adds a persistent session to the previous agent. Its conversation
 # history is stored on disk, so it remains available after the program closes.
 # يضيف هذا المثال جلسة دائمة إلى الوكيل السابق. يُحفظ سجل المحادثة على القرص،

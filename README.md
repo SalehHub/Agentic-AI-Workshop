@@ -7,12 +7,14 @@ Agents SDK. The first example creates a simple agent with one tool and no memory
 The next example adds a persistent session so the agent can remember previous
 conversations. A third example adds tools for reading and renaming files.
 A fourth example shows how to select a model and configure its behavior.
+A fifth example introduces input and output guardrails.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
 التالي جلسة دائمة تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
 أدوات لقراءة الملفات وإعادة تسميتها.
 ويوضح مثال رابع كيفية اختيار النموذج وضبط سلوكه.
+ويقدم مثال خامس ضوابط الإدخال والإخراج.
 
 ## Setup | الإعداد
 
@@ -288,6 +290,51 @@ Run it with:
 
 ```bash
 python agent_model.py
+```
+
+### `agent_guardrails.py`
+
+This example adds two simple guardrails to the file assistant:
+
+- The input guardrail checks the user's request. It blocks destructive words such
+  as `delete` before the agent or its tools start.
+- The output guardrail checks the agent's final response. It blocks the response
+  if it contains a sensitive marker such as `secret` or `password`.
+
+When a check fails, its `tripwire` is triggered. The runner raises either
+`InputGuardrailTripwireTriggered` or `OutputGuardrailTripwireTriggered`, and the
+program catches the exception and prints a clear message. The keyword checks are
+intentionally simple for teaching; production guardrails usually need rules that
+match the application's actual risks and data.
+
+يضيف هذا المثال ضابطين بسيطين إلى مساعد الملفات:
+
+- يفحص ضابط الإدخال طلب المستخدم، ويحظر كلمات الإجراء المدمر مثل `delete` قبل
+  تشغيل الوكيل أو أدواته.
+- يفحص ضابط الإخراج الإجابة النهائية للوكيل، ويحظرها إذا احتوت على كلمة حساسة
+  مثل `secret` أو `password`.
+
+عند فشل الفحص، يُفعّل `tripwire`. عندها يطلق المشغّل الاستثناء
+`InputGuardrailTripwireTriggered` أو `OutputGuardrailTripwireTriggered`، ويلتقط
+البرنامج الاستثناء ويعرض رسالة واضحة. فحص الكلمات هنا مبسط لأغراض التعليم؛ أما
+في التطبيقات الحقيقية فيجب تصميم الضوابط لتناسب مخاطر التطبيق وبياناته.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_guardrails.py
+```
+
+Try these requests:
+
+جرّب هذه الطلبات:
+
+```text
+List the files in this folder: .
+Delete all files in this folder.
+Reply with the word SECRET.
 ```
 
 ### `hook.py`
