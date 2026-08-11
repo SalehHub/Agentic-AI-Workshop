@@ -14,6 +14,7 @@ from agents import (
     OutputGuardrailTripwireTriggered,
     RunContextWrapper,
     Runner,
+    SQLiteSession,
 )
 from agents.decorators import input_guardrail, output_guardrail, tool
 
@@ -90,6 +91,11 @@ def block_sensitive_output(
     )
 
 
+session = SQLiteSession(
+    session_id="history",
+    db_path="history.db",
+)
+
 file_agent = Agent(
     name="File Assistant",
     instructions=(
@@ -113,7 +119,7 @@ def main():
             break
 
         try:
-            result = Runner.run_sync(file_agent, user_input)
+            result = Runner.run_sync(file_agent, user_input, session=session)
             print(f"Agent: {result.final_output}\n")
         except InputGuardrailTripwireTriggered:
             print("Input guardrail: destructive requests are not allowed.\n")

@@ -10,7 +10,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from openai.types.shared import Reasoning
 
-from agents import Agent, ModelSettings, Runner
+from agents import Agent, ModelSettings, Runner, SQLiteSession
 from agents.decorators import tool
 
 load_dotenv()
@@ -95,6 +95,11 @@ SELECTED_MODEL_SETTINGS = ModelSettings(
 # SELECTED_MODEL_SETTINGS = ModelSettings(temperature=0.9)
 
 
+session = SQLiteSession(
+    session_id="history",
+    db_path="history.db",
+)
+
 file_agent = Agent(
     name="File Assistant",
     instructions=(
@@ -117,7 +122,7 @@ def main():
         if user_input.lower() in ["exit", "quit"]:
             break
 
-        result = Runner.run_sync(file_agent, user_input)
+        result = Runner.run_sync(file_agent, user_input, session=session)
         print(f"Agent: {result.final_output}\n")
 
 

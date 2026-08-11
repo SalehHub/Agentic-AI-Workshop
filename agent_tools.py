@@ -1,15 +1,15 @@
 # Example Three | المثال الثالث
 
-# This example adds two tools to the first agent: one reads file contents, and
+# This example adds two tools to the previous agent: one reads file contents, and
 # the other renames files. The agent uses all three tools to organize a folder.
-# يضيف هذا المثال أداتين إلى الوكيل الأول: أداة لقراءة محتوى الملفات، وأخرى
+# يضيف هذا المثال أداتين إلى الوكيل السابق: أداة لقراءة محتوى الملفات، وأخرى
 # لإعادة تسميتها. يستخدم الوكيل الأدوات الثلاث لتنظيم ملفات أحد المجلدات.
 
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-from agents import Agent, Runner
+from agents import Agent, Runner, SQLiteSession
 from agents.decorators import tool
 
 load_dotenv()
@@ -83,6 +83,11 @@ def rename_file(path: str, new_name: str) -> str:
     return f"Renamed: {file.name} -> {new_file.name}"
 
 
+session = SQLiteSession(
+    session_id="history",
+    db_path="history.db",
+)
+
 file_agent = Agent(
     name="File Assistant",
     instructions=(
@@ -103,7 +108,7 @@ def main():
         if user_input.lower() in ["exit", "quit"]:
             break
 
-        result = Runner.run_sync(file_agent, user_input)
+        result = Runner.run_sync(file_agent, user_input, session=session)
         print(f"Agent: {result.final_output}\n")
 
 

@@ -192,13 +192,14 @@ deactivate
 ## Python files | ملفات بايثون
 
 All agent examples use the same general `File Assistant` name and instructions.
-The available tools change between learning stages, while later examples add one
-focused concept, such as sessions or model settings, without changing the general
-instructions.
+Starting with example two, every later example keeps the persistent session. The
+available tools change between learning stages, while each later example adds one
+focused concept without changing the general instructions.
 
 تستخدم جميع أمثلة الوكيل الاسم العام `File Assistant` والتعليمات العامة نفسها.
-تتغير الأدوات المتاحة بين المراحل التعليمية، بينما تضيف الأمثلة اللاحقة مفهوماً
-محدداً، مثل الجلسات أو إعدادات النموذج، من دون تغيير التعليمات العامة.
+ابتداءً من المثال الثاني، تحتفظ جميع الأمثلة اللاحقة بالجلسة الدائمة. وتتغير
+الأدوات المتاحة بين المراحل التعليمية، بينما يضيف كل مثال لاحق مفهوماً محدداً
+من دون تغيير التعليمات العامة.
 
 ### `agent.py`
 
