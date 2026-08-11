@@ -5,7 +5,6 @@
 # يضيف هذا المثال جلسة دائمة إلى الوكيل السابق. يُحفظ سجل المحادثة على القرص،
 # لذلك يبقى متاحاً بعد إغلاق البرنامج وتشغيله مرة أخرى.
 
-import os
 from pathlib import Path
 
 from dotenv import load_dotenv
