@@ -22,15 +22,9 @@ def list_folder(path: str = ".") -> str:
     # Expand "~" and resolve relative paths before accessing the folder.
     folder = Path(path).expanduser().resolve()
 
-    # اعرض المجلدات أولاً، ثم الملفات، ورتّب الأسماء دون حساسية لحالة الأحرف.
-    items = sorted(
-        folder.iterdir(),
-        key=lambda item: (item.is_file(), item.name.lower()),
-    )
-
     results = []
 
-    for item in items:
+    for item in folder.iterdir():
         item_type = "folder" if item.is_dir() else "file"
 
         results.append(f"[{item_type}] {item.name}")
