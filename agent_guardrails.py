@@ -106,21 +106,16 @@ file_agent = Agent(
 )
 
 
-def main():
-    while True:
-        user_input = input("User: ")
+while True:
+    user_input = input("User: ")
 
-        if user_input.lower() in ["exit", "quit"]:
-            break
+    if user_input.lower() in ["exit", "quit"]:
+        break
 
-        try:
-            result = Runner.run_sync(file_agent, user_input, session=session)
-            print(f"Agent: {result.final_output}\n")
-        except InputGuardrailTripwireTriggered:
-            print("Input guardrail: destructive requests are not allowed.\n")
-        except OutputGuardrailTripwireTriggered:
-            print("Output guardrail: the response contained sensitive words.\n")
-
-
-if __name__ == "__main__":
-    main()
+    try:
+        result = Runner.run_sync(file_agent, user_input, session=session)
+        print(f"Agent: {result.final_output}\n")
+    except InputGuardrailTripwireTriggered:
+        print("Input guardrail: destructive requests are not allowed.\n")
+    except OutputGuardrailTripwireTriggered:
+        print("Output guardrail: the response contained sensitive words.\n")

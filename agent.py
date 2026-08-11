@@ -49,23 +49,16 @@ file_agent = Agent(
 )
 
 
-def main():
+# حلقة تفاعلية بسيطة تستقبل طلبات المستخدم من الطرفية.
+while True:
+    user_input = input("User: ")
 
-    # حلقة تفاعلية بسيطة تستقبل طلبات المستخدم من الطرفية.
-    while True:
+    if user_input.lower() in ["exit", "quit"]:
+        break
 
-        user_input = input("User: ")
-        if user_input.lower() in ["exit", "quit"]:
-            break
-
-        # No session or conversation history is passed here, so every request
-        # is independent and the agent has no memory of earlier requests.
-        # لا نمرر جلسة أو سجل محادثة هنا، لذلك يُعامل كل طلب بشكل مستقل، ولا
-        # يتذكر الوكيل أي طلبات سابقة.
-        result = Runner.run_sync(file_agent, user_input)
-
-        print(f"Agent: {result.final_output}\n")
-
-
-if __name__ == "__main__":
-    main()
+    # No session or conversation history is passed here, so every request
+    # is independent and the agent has no memory of earlier requests.
+    # لا نمرر جلسة أو سجل محادثة هنا، لذلك يُعامل كل طلب بشكل مستقل، ولا
+    # يتذكر الوكيل أي طلبات سابقة.
+    result = Runner.run_sync(file_agent, user_input)
+    print(f"Agent: {result.final_output}\n")

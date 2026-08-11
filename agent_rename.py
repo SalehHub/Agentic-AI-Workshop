@@ -96,16 +96,11 @@ file_agent = Agent(
 )
 
 
-def main():
-    while True:
-        user_input = input("User: ")
+while True:
+    user_input = input("User: ")
 
-        if user_input.lower() in ["exit", "quit"]:
-            break
+    if user_input.lower() in ["exit", "quit"]:
+        break
 
-        result = Runner.run_sync(file_agent, user_input, session=session)
-        print(f"Agent: {result.final_output}\n")
-
-
-if __name__ == "__main__":
-    main()
+    result = Runner.run_sync(file_agent, user_input, session=session)
+    print(f"Agent: {result.final_output}\n")

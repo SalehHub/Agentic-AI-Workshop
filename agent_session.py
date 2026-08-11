@@ -52,22 +52,15 @@ file_agent = Agent(
 )
 
 
-def main():
+while True:
+    user_input = input("User: ")
 
-    while True:
+    if user_input.lower() in ["exit", "quit"]:
+        break
 
-        user_input = input("User: ")
-        if user_input.lower() in ["exit", "quit"]:
-            break
-
-        # Passing the session loads earlier messages and saves the new exchange.
-        # For example, the agent can recall your name after you close and reopen it.
-        # عند تمرير الجلسة، تُحمّل الرسائل السابقة وتُحفظ المحادثة الجديدة. لذلك
-        # يمكن للوكيل تذكّر اسمك حتى بعد إغلاقه وتشغيله مرة أخرى.
-        result = Runner.run_sync(file_agent, user_input, session=session)
-
-        print(f"Agent: {result.final_output}\n")
-
-
-if __name__ == "__main__":
-    main()
+    # Passing the session loads earlier messages and saves the new exchange.
+    # For example, the agent can recall your name after you close and reopen it.
+    # عند تمرير الجلسة، تُحمّل الرسائل السابقة وتُحفظ المحادثة الجديدة. لذلك
+    # يمكن للوكيل تذكّر اسمك حتى بعد إغلاقه وتشغيله مرة أخرى.
+    result = Runner.run_sync(file_agent, user_input, session=session)
+    print(f"Agent: {result.final_output}\n")
