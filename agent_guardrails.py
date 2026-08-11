@@ -27,14 +27,9 @@ def list_folder(path: str = ".") -> str:
 
     folder = Path(path).expanduser().resolve()
 
-    items = sorted(
-        folder.iterdir(),
-        key=lambda item: (item.is_file(), item.name.lower()),
-    )
-
     results = []
 
-    for item in items:
+    for item in folder.iterdir():
         item_type = "folder" if item.is_dir() else "file"
         results.append(f"[{item_type}] {item.name}")
 
