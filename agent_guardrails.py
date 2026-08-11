@@ -5,8 +5,6 @@
 
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 from agents import (
     Agent,
     GuardrailFunctionOutput,
@@ -15,8 +13,10 @@ from agents import (
     RunContextWrapper,
     Runner,
     SQLiteSession,
+    TResponseInputItem,
 )
 from agents.decorators import input_guardrail, output_guardrail, tool
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -44,10 +44,25 @@ def list_folder(path: str = ".") -> str:
 def block_destructive_requests(
     _context: RunContextWrapper[None],
     _agent: Agent,
-    user_input: str,
+    user_input: str | list[TResponseInputItem],
 ) -> GuardrailFunctionOutput:
+    # A session adds the conversation history, so check only the newest message.
+    # تضيف الجلسة سجل المحادثة، لذلك نفحص أحدث رسالة فقط.
+    if isinstance(user_input, str):
+        latest_message = user_input
+    else:
+        content = user_input[-1].get("content", "")
+        if isinstance(content, str):
+            latest_message = content
+        else:
+            latest_message = " ".join(
+                part.get("text", "")
+                for part in content
+                if part.get("type") == "input_text"
+            )
+
     blocked_words = (
-        "delete",
+        "delet",
         "remove",
         "erase",
         "حذف",
@@ -55,7 +70,7 @@ def block_destructive_requests(
         "امسح",
         "إزالة",
     )
-    matched_words = [word for word in blocked_words if word in user_input.lower()]
+    matched_words = [word for word in blocked_words if word in latest_message.lower()]
 
     return GuardrailFunctionOutput(
         output_info={"matched_words": matched_words},
