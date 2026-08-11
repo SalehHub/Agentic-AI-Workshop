@@ -4,3 +4,5 @@ history.db
 __pycache__/
 .DS_Store
 .venv/
+history.db-shm
+history.db-wal
