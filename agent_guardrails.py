@@ -62,7 +62,7 @@ def block_destructive_requests(
             )
 
     blocked_words = (
-        "delet",
+        "delete",
         "remove",
         "erase",
         "حذف",
