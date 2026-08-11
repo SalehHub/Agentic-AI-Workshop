@@ -1,2 +1,9 @@
 openai-agents
+openai
 python-dotenv
+nest-asyncio
+pypdf
+chardet
+pymupdf
+pytesseract
+Pillow

@@ -8,6 +8,10 @@ The next example adds a persistent session so the agent can remember previous
 conversations. A third example adds tools for reading and renaming files.
 A fourth example shows how to select a model and configure its behavior.
 A fifth example introduces input and output guardrails.
+A sixth example enhances the file reader to support different text encodings,
+regular PDFs, and scanned PDFs using OCR.
+A seventh example creates two agents: a file assistant and a specialist that
+summarizes text files.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
@@ -15,6 +19,9 @@ SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة وا�
 أدوات لقراءة الملفات وإعادة تسميتها.
 ويوضح مثال رابع كيفية اختيار النموذج وضبط سلوكه.
 ويقدم مثال خامس ضوابط الإدخال والإخراج.
+ويطوّر مثال سادس أداة قراءة الملفات لدعم ترميزات نصية مختلفة وملفات PDF العادية
+والممسوحة ضوئياً باستخدام OCR.
+وينشئ مثال سابع وكيلين: مساعداً للملفات ووكيلاً متخصصاً في تلخيص الملفات النصية.
 
 ## Setup | الإعداد
 
@@ -134,9 +141,49 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-The requirements file installs the OpenAI Agents SDK and `python-dotenv`.
+The requirements file installs the OpenAI Agents SDK and the Python packages
+needed to detect text encodings, read PDFs, and run OCR.
 
-يثبّت ملف المتطلبات حزمة OpenAI Agents SDK وحزمة `python-dotenv`.
+يثبّت ملف المتطلبات OpenAI Agents SDK وحزم بايثون اللازمة لاكتشاف ترميز النصوص
+وقراءة ملفات PDF وتشغيل OCR.
+
+#### Install the OCR engine | تثبيت محرك OCR
+
+Example Six needs Tesseract installed on the computer to read scanned PDFs.
+Install both English and Arabic language data, then verify that the `tesseract`
+command works.
+
+يحتاج المثال السادس إلى تثبيت Tesseract على الجهاز لقراءة ملفات PDF الممسوحة
+ضوئياً. ثبّت بيانات اللغتين الإنجليزية والعربية، ثم تحقق من عمل أمر `tesseract`.
+
+On macOS with [Homebrew](https://brew.sh/):
+
+على macOS باستخدام [Homebrew](https://brew.sh/):
+
+```bash
+brew install tesseract tesseract-lang
+```
+
+On Windows, use the Windows installer linked from the
+[Tesseract documentation](https://tesseract-ocr.github.io/tessdoc/), select the
+Arabic language during installation, and allow the installer to add Tesseract to
+`PATH`.
+
+على ويندوز، استخدم برنامج تثبيت ويندوز المشار إليه في
+[توثيق Tesseract](https://tesseract-ocr.github.io/tessdoc/)، واختر اللغة العربية
+أثناء التثبيت، واسمح لبرنامج التثبيت بإضافة Tesseract إلى `PATH`.
+
+Verify the installation:
+
+تحقق من التثبيت:
+
+```bash
+tesseract --list-langs
+```
+
+The result should include `eng` and `ara`.
+
+يجب أن تتضمن النتيجة `eng` و`ara`.
 
 ### 5. Set the OpenAI API key | إعداد مفتاح OpenAI
 
@@ -238,24 +285,22 @@ Run it with:
 python agent_session.py
 ```
 
-### `agent_tools.py`
+### `agent_rename.py`
 
-This example keeps `list_folder` and adds two tools: `read_file` reads the content
-of a text file, and `rename_file` changes its name. The agent can now handle both
-folder-listing requests and requests to read files and rename them based on their
-content, while preserving extensions and avoiding duplicate names.
+This example keeps `list_folder` and adds two tools: `read_file` reads a UTF-8
+text file, while `rename_file` changes a file's name. The agent can read text
+files and rename them based on their contents.
 
-يحتفظ هذا المثال بأداة `list_folder` ويضيف أداتين: تقرأ `read_file` محتوى الملف
-النصي، وتغيّر `rename_file` اسمه. يستطيع الوكيل الآن تنفيذ طلبات عرض محتويات
-المجلد، وكذلك قراءة الملفات وإعادة تسميتها بناءً على محتواها، مع الحفاظ على
-الامتدادات وتجنّب الأسماء المكررة.
+يحتفظ هذا المثال بأداة `list_folder` ويضيف أداتين: تقرأ `read_file` ملفاً نصياً
+بترميز UTF-8، بينما تغيّر `rename_file` اسم الملف. يستطيع الوكيل قراءة الملفات
+النصية وإعادة تسميتها بناءً على محتواها.
 
 Run it with:
 
 شغّله باستخدام:
 
 ```bash
-python agent_tools.py
+python agent_rename.py
 ```
 
 ### `agent_model.py`
@@ -336,6 +381,70 @@ Try these requests:
 List the files in this folder: .
 Delete all files in this folder.
 Reply with the word SECRET.
+```
+
+### `agent_pdf.py`
+
+Example Six keeps the folder-listing, file-reading, and file-renaming tools. It
+enhances `read_file` so it can detect common text encodings and read both regular
+and scanned PDF files. Scanned pages use Arabic and English OCR. When a PDF has a
+damaged text layer, the tool compares it with the OCR result and returns the more
+readable version. Long results are shortened to protect the model's context
+window.
+
+يحتفظ المثال السادس بأدوات عرض المجلد وقراءة الملفات وإعادة تسميتها. ويطوّر
+`read_file` لتكتشف ترميزات النصوص الشائعة وتقرأ ملفات PDF العادية والممسوحة
+ضوئياً. تستخدم الصفحات الممسوحة OCR باللغتين العربية والإنجليزية. وإذا احتوى
+ملف PDF على طبقة نص تالفة، تقارن الأداة النص بنتيجة OCR وتعيد النسخة الأكثر
+وضوحاً. وتُختصر النتائج الطويلة لحماية نافذة سياق النموذج.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_pdf.py
+```
+
+Use this example—not `agent.py`—when you want to read or rename PDF files.
+
+استخدم هذا المثال، وليس `agent.py`، عندما تريد قراءة ملفات PDF أو إعادة تسميتها.
+
+### `agent_multiple.py`
+
+Example Seven introduces a second agent named `File Summarizer`. The main `File
+Assistant` keeps the previous tools and adds `write_file`, which creates a new
+UTF-8 text file without overwriting an existing file. After reading a text file,
+the main agent calls the second agent through the `summarize_file` tool and can
+save the resulting summary with `write_file`. The summarizer has one focused job:
+produce a clear and accurate summary without inventing information. The main
+agent remains responsible for the final response. This demonstrates the
+agents-as-tools orchestration pattern described in the
+[OpenAI Agents SDK documentation](https://developers.openai.com/api/docs/guides/agents/orchestration).
+
+يقدم المثال السابع وكيلاً ثانياً اسمه `File Summarizer`. يحتفظ `File Assistant`
+الرئيسي بالأدوات السابقة ويضيف `write_file`، التي تنشئ ملفاً نصياً جديداً بترميز
+UTF-8 من دون استبدال ملف موجود. وبعد قراءة الملف النصي، يستدعي الوكيل الثاني من
+خلال أداة `summarize_file`، ثم يمكنه حفظ الملخص باستخدام `write_file`. للوكيل
+المتخصص مهمة واحدة محددة: إنشاء ملخص واضح ودقيق من دون اختراع معلومات. ويبقى
+الوكيل الرئيسي مسؤولاً عن الإجابة النهائية. يوضح هذا المثال نمط استخدام الوكلاء
+كأدوات الموضح في
+[توثيق OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/orchestration).
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_multiple.py
+```
+
+Try this request:
+
+جرّب هذا الطلب:
+
+```text
+Read and summarize /path/to/file.txt, then save the summary as /path/to/summary.txt
 ```
 
 ### `hook.py`

@@ -1,16 +1,15 @@
-# Example Four | المثال الرابع
+# Example Seven | المثال السابع
 
-# This example builds on agent_rename.py and shows how to select a model and
-# configure its behavior with ModelSettings.
-# يعتمد هذا المثال على agent_rename.py ويوضح كيفية اختيار النموذج وضبط سلوكه
-# باستخدام ModelSettings.
+# This example adds a tool for writing text files and a second agent that
+# specializes in summarizing their contents.
+# يضيف هذا المثال أداة لكتابة الملفات النصية ووكيلاً ثانياً متخصصاً في تلخيص
+# محتواها.
 
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai.types.shared import Reasoning
 
-from agents import Agent, ModelSettings, Runner, SQLiteSession
+from agents import Agent, Runner, SQLiteSession
 from agents.decorators import tool
 
 load_dotenv()
@@ -78,21 +77,39 @@ def rename_file(path: str, new_name: str) -> str:
     return f"Renamed: {file.name} -> {new_file.name}"
 
 
-# Active configuration: choose a GPT-5.6 model and how much reasoning it uses.
-# الإعداد الفعّال: اختر نموذجاً من GPT-5.6 وحدد مقدار الاستدلال الذي يستخدمه.
-# https://developers.openai.com/api/docs/models
-SELECTED_MODEL = "gpt-5.6-sol"
-SELECTED_MODEL_SETTINGS = ModelSettings(
-    reasoning=Reasoning(effort="medium"),
-)
+# This tool creates a UTF-8 text file without overwriting an existing file.
+# تنشئ هذه الأداة ملفاً نصياً بترميز UTF-8 من دون استبدال ملف موجود.
+@tool
+def write_file(path: str, content: str) -> str:
+    """Create a UTF-8 text file without overwriting an existing file."""
 
-# Temperature controls randomness and variation, not reasoning. Not every model
-# supports it. To try a more creative configuration, comment out the active
-# configuration above and uncomment these two lines:
-# تتحكم temperature في العشوائية والتنوع، وليس الاستدلال، ولا تدعمها جميع
-# النماذج. لتجربة إعداد أكثر إبداعاً، عطّل الإعداد السابق وفعّل السطرين التاليين:
-# SELECTED_MODEL = "gpt-4.1"
-# SELECTED_MODEL_SETTINGS = ModelSettings(temperature=0.9)
+    file = Path(path).expanduser().resolve()
+
+    if not file.parent.is_dir():
+        return f"Folder not found: {file.parent}"
+
+    try:
+        with file.open("x", encoding="utf-8") as output_file:
+            output_file.write(content)
+    except FileExistsError:
+        return f"Cannot write because this path already exists: {file}"
+    except OSError as error:
+        return f"Cannot write file: {file} ({error})"
+
+    return f"Created file: {file}"
+
+
+# The second agent has one focused responsibility: summarizing supplied content.
+# للوكيل الثاني مسؤولية محددة: تلخيص المحتوى الذي يُرسل إليه.
+summary_agent = Agent(
+    name="File Summarizer",
+    instructions=(
+        "Summarize the supplied file contents clearly and accurately. "
+        "Include the main topic and the most important points. "
+        "Do not add information that is not present in the content. "
+        "Use the same language as the supplied content when possible. "
+    ),
+)
 
 
 session = SQLiteSession(
@@ -109,9 +126,20 @@ file_agent = Agent(
         "Never invent file names, file contents, or actions you did not perform. "
         "After completing the request, briefly summarize what you did. "
     ),
-    model=SELECTED_MODEL,
-    model_settings=SELECTED_MODEL_SETTINGS,
-    tools=[list_folder, read_file, rename_file],
+    tools=[
+        list_folder,
+        read_file,
+        rename_file,
+        write_file,
+        # An agent can become a tool that another agent calls for a focused task.
+        # يمكن تحويل الوكيل إلى أداة يستدعيها وكيل آخر لتنفيذ مهمة محددة.
+        summary_agent.as_tool(
+            tool_name="summarize_file",
+            tool_description=(
+                "Summarize file contents after using read_file to read the file."
+            ),
+        ),
+    ],
 )
 
 
