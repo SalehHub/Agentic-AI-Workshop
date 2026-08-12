@@ -4,7 +4,8 @@
 
 This workshop introduces agent design step by step using Python and the OpenAI
 Agents SDK. The first example creates a simple agent with one tool and no memory.
-The next example adds a persistent session so the agent can remember previous
+Example 1.1 keeps that agent and streams its response in the console. The next
+example adds a persistent session so the agent can remember previous
 conversations. A third example adds tools for reading and renaming files.
 A fourth example shows how to select a model and configure its behavior.
 A fifth example introduces input and output guardrails.
@@ -16,8 +17,9 @@ The eighth and final example adds a desktop chat interface, file and folder
 attachments, and multiple saved conversations.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
-SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
-التالي جلسة دائمة تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
+SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ويضيف المثال
+1.1 عرض إجابة الوكيل تدريجياً في الطرفية. ثم يضيف المثال التالي جلسة دائمة
+تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
 أدوات لقراءة الملفات وإعادة تسميتها.
 ويوضح مثال رابع كيفية اختيار النموذج وضبط سلوكه.
 ويقدم مثال خامس ضوابط الإدخال والإخراج.
@@ -268,6 +270,27 @@ Run it with:
 
 ```bash
 python agent.py
+```
+
+### `agent_stream.py`
+
+Example 1.1 keeps the same one-tool agent from Example One and adds console
+streaming. Instead of waiting for the complete response, it uses
+`Runner.run_streamed` and prints each `ResponseTextDeltaEvent` immediately. It
+still has no session, so every request is independent and the agent has no
+memory.
+
+يحتفظ المثال 1.1 بالوكيل نفسه ذي الأداة الواحدة من المثال الأول، ويضيف عرض
+الإجابة تدريجياً في الطرفية. بدلاً من انتظار الإجابة كاملة، يستخدم
+`Runner.run_streamed` ويطبع كل `ResponseTextDeltaEvent` مباشرة. لا يزال هذا
+الوكيل من دون جلسة، لذلك يكون كل طلب مستقلاً ولا يمتلك الوكيل ذاكرة.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_stream.py
 ```
 
 ### `agent_session.py`
