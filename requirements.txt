@@ -6,3 +6,4 @@ chardet
 pymupdf
 pytesseract
 Pillow
+PySide6

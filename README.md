@@ -12,6 +12,8 @@ A sixth example enhances the file reader to support different text encodings,
 regular PDFs, and scanned PDFs using OCR.
 A seventh example creates two agents: a file assistant and a specialist that
 summarizes text files.
+The eighth and final example adds a desktop chat interface, file and folder
+attachments, and multiple saved conversations.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ثم يضيف المثال
@@ -22,6 +24,8 @@ SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة وا�
 ويطوّر مثال سادس أداة قراءة الملفات لدعم ترميزات نصية مختلفة وملفات PDF العادية
 والممسوحة ضوئياً باستخدام OCR.
 وينشئ مثال سابع وكيلين: مساعداً للملفات ووكيلاً متخصصاً في تلخيص الملفات النصية.
+ويضيف المثال الثامن والأخير واجهة محادثة مكتبية، وإرفاق الملفات والمجلدات، وحفظ
+عدة محادثات مستقلة.
 
 ## Setup | الإعداد
 
@@ -142,10 +146,10 @@ python -m pip install -r requirements.txt
 ```
 
 The requirements file installs the OpenAI Agents SDK and the Python packages
-needed to detect text encodings, read PDFs, and run OCR.
+needed to detect text encodings, read PDFs, run OCR, and display the GUI.
 
 يثبّت ملف المتطلبات OpenAI Agents SDK وحزم بايثون اللازمة لاكتشاف ترميز النصوص
-وقراءة ملفات PDF وتشغيل OCR.
+وقراءة ملفات PDF وتشغيل OCR وعرض الواجهة الرسومية.
 
 #### Install the OCR engine | تثبيت محرك OCR
 
@@ -446,6 +450,51 @@ Try this request:
 ```text
 Read and summarize /path/to/file.txt, then save the summary as /path/to/summary.txt
 ```
+
+### `agent_gui.py`
+
+Example Eight is the final example. It gives the complete text-file assistant a
+desktop chat interface built with PySide6. The user can attach one or more file
+paths or a folder path, then ask the agent to list, read, rename, write, or
+summarize files. Attaching an item shares its local path with the agent; the
+agent uses its tools when it needs to inspect that path.
+
+Each new conversation receives a unique chat ID. The chat list, IDs, and message
+history are stored in `gui_history.db`. Closing and reopening the application
+restores the previous conversations, and switching chats gives the agent the
+memory belonging only to the selected chat ID. IDs are used internally and are
+not displayed in the interface.
+
+المثال الثامن هو المثال الأخير. يمنح مساعد الملفات النصية الكامل واجهة محادثة
+مكتبية مبنية باستخدام PySide6. يمكن للمستخدم إرفاق مسار ملف واحد أو عدة ملفات
+أو مسار مجلد، ثم طلب عرض الملفات أو قراءتها أو إعادة تسميتها أو كتابتها أو
+تلخيصها. يشارك الإرفاق المسار المحلي مع الوكيل، ويستخدم الوكيل أدواته عند حاجته
+إلى فحص ذلك المسار.
+
+تحصل كل محادثة جديدة على معرّف محادثة فريد. تُحفظ قائمة المحادثات ومعرّفاتها
+وسجل الرسائل في `gui_history.db`. عند إغلاق التطبيق وفتحه من جديد، تظهر
+المحادثات السابقة، ولكل محادثة ذاكرة مستقلة مرتبطة بمعرّفها فقط. تُستخدم
+المعرّفات داخلياً ولا تظهر في الواجهة.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python agent_gui.py
+```
+
+Use **Attach** to select files, folders, or both in the same picker. The selected
+paths appear at the end of the message, where you can edit them before pressing
+**Send** or `Ctrl+Enter`. Use **New Chat** to start an independent saved
+conversation. Right-click a chat and choose **Delete Chat** to permanently
+remove that conversation and its saved messages after confirming the warning.
+
+استخدم **Attach** لاختيار ملفات أو مجلدات أو كليهما من النافذة نفسها. تظهر
+المسارات المحددة في نهاية الرسالة، ويمكنك تعديلها قبل الضغط على **Send** أو
+استخدام `Ctrl+Enter`. اضغط **New Chat** لبدء محادثة مستقلة ومحفوظة.
+انقر بزر الفأرة الأيمن على محادثة واختر **Delete Chat** لحذفها نهائياً مع
+رسائلها المحفوظة بعد تأكيد رسالة التحذير.
 
 ### `hook.py`
 

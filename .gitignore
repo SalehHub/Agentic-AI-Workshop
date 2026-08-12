@@ -6,3 +6,6 @@ __pycache__/
 .venv/
 history.db-shm
 history.db-wal
+gui_history.db
+gui_history.db-shm
+gui_history.db-wal
