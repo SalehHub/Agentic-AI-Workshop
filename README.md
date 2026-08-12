@@ -7,27 +7,32 @@ Agents SDK. The first example creates a simple agent with one tool and no memory
 Example 1.1 keeps that agent and streams its response in the console. The next
 example adds a persistent session so the agent can remember previous
 conversations. A third example adds tools for reading and renaming files.
+Example 3.1 shows that one unrestricted `cmd` tool can perform all these
+operations, while also demonstrating the danger of broad tool access.
 A fourth example shows how to select a model and configure its behavior.
 A fifth example introduces input and output guardrails.
 A sixth example enhances the file reader to support different text encodings,
 regular PDFs, and scanned PDFs using OCR.
 A seventh example creates two agents: a file assistant and a specialist that
 summarizes text files.
-The eighth and final example adds a desktop chat interface, file and folder
-attachments, and multiple saved conversations.
+The eighth example adds a desktop chat interface, file and folder attachments,
+and multiple saved conversations. Example 8.1 keeps that interface and streams
+the agent's response as it is generated.
 
 تقدم هذه الورشة تصميم وكلاء الذكاء الاصطناعي خطوة بخطوة باستخدام بايثون وOpenAI Agents
 SDK. ينشئ المثال الأول وكيلاً بسيطاً بأداة واحدة ومن دون ذاكرة، ويضيف المثال
 1.1 عرض إجابة الوكيل تدريجياً في الطرفية. ثم يضيف المثال التالي جلسة دائمة
 تمكّن الوكيل من تذكّر المحادثات السابقة. ويضيف مثال ثالث
-أدوات لقراءة الملفات وإعادة تسميتها.
+أدوات لقراءة الملفات وإعادة تسميتها. ويوضح المثال 3.1 أن أداة `cmd` واحدة وغير
+مقيّدة تستطيع تنفيذ هذه العمليات كلها، كما يوضح خطورة منح الأداة صلاحيات واسعة.
 ويوضح مثال رابع كيفية اختيار النموذج وضبط سلوكه.
 ويقدم مثال خامس ضوابط الإدخال والإخراج.
 ويطوّر مثال سادس أداة قراءة الملفات لدعم ترميزات نصية مختلفة وملفات PDF العادية
 والممسوحة ضوئياً باستخدام OCR.
 وينشئ مثال سابع وكيلين: مساعداً للملفات ووكيلاً متخصصاً في تلخيص الملفات النصية.
-ويضيف المثال الثامن والأخير واجهة محادثة مكتبية، وإرفاق الملفات والمجلدات، وحفظ
-عدة محادثات مستقلة.
+ويضيف المثال الثامن واجهة محادثة مكتبية، وإرفاق الملفات والمجلدات، وحفظ عدة
+محادثات مستقلة. ويحتفظ المثال 8.1 بالواجهة نفسها ويعرض إجابة الوكيل تدريجياً
+أثناء إنشائها.
 
 ## Setup | الإعداد
 
@@ -254,7 +259,7 @@ focused concept without changing the general instructions.
 الأدوات المتاحة بين المراحل التعليمية، بينما يضيف كل مثال لاحق مفهوماً محدداً
 من دون تغيير التعليمات العامة.
 
-### `agent.py`
+### `example_01_agent.py`
 
 The first agent-design example. It creates a file assistant with one tool,
 `list_folder`, which lists the contents of a folder. Each request is independent,
@@ -269,10 +274,10 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent.py
+python example_01_agent.py
 ```
 
-### `agent_stream.py`
+### `example_01_1_agent_stream.py`
 
 Example 1.1 keeps the same one-tool agent from Example One and adds console
 streaming. Instead of waiting for the complete response, it uses
@@ -290,10 +295,10 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_stream.py
+python example_01_1_agent_stream.py
 ```
 
-### `agent_session.py`
+### `example_02_agent_session.py`
 
 This example adds a persistent `SQLiteSession`. Conversation history is saved in
 `history.db`, allowing the agent to remember information after it is closed and
@@ -309,10 +314,10 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_session.py
+python example_02_agent_session.py
 ```
 
-### `agent_rename.py`
+### `example_03_agent_rename.py`
 
 This example keeps `list_folder` and adds two tools: `read_file` reads a UTF-8
 text file, while `rename_file` changes a file's name. The agent can read text
@@ -327,10 +332,38 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_rename.py
+python example_03_agent_rename.py
 ```
 
-### `agent_model.py`
+### `example_03_1_agent_rename.py`
+
+Example 3.1 replaces the three separate tools with one unrestricted `cmd` tool.
+The agent can use shell commands to list folders, read files, rename files, and
+perform any other command supported by the operating system.
+
+**Warning:** This example is intentionally dangerous. The tool has no allowlist,
+sandbox, or confirmation step. It can delete or overwrite files, run programs,
+and access anything available to the user account running Python. Use it only in
+a disposable test environment and never with untrusted requests.
+
+يستبدل المثال 3.1 الأدوات الثلاث المنفصلة بأداة `cmd` واحدة وغير مقيّدة. يستطيع
+الوكيل استخدام أوامر النظام لعرض المجلدات وقراءة الملفات وإعادة تسميتها، كما
+يستطيع تنفيذ أي أمر آخر يدعمه نظام التشغيل.
+
+**تحذير:** هذا المثال خطير عن قصد. لا تحتوي الأداة على قائمة أوامر مسموحة أو
+بيئة معزولة أو خطوة تأكيد. يمكنها حذف الملفات أو استبدالها وتشغيل البرامج والوصول
+إلى أي شيء متاح لحساب المستخدم الذي يشغّل بايثون. استخدمها فقط في بيئة اختبار
+يمكن التخلص منها، ولا تستخدمها أبداً مع طلبات غير موثوقة.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python example_03_1_agent_rename.py
+```
+
+### `example_04_agent_model.py`
 
 This example keeps the same tools and demonstrates two model configurations:
 
@@ -362,10 +395,10 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_model.py
+python example_04_agent_model.py
 ```
 
-### `agent_guardrails.py`
+### `example_05_agent_guardrails.py`
 
 This example adds two simple guardrails to the file assistant:
 
@@ -397,7 +430,7 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_guardrails.py
+python example_05_agent_guardrails.py
 ```
 
 Try these requests:
@@ -410,7 +443,7 @@ Delete all files in this folder.
 Reply with the word SECRET.
 ```
 
-### `agent_pdf.py`
+### `example_06_agent_pdf.py`
 
 Example Six keeps the folder-listing, file-reading, and file-renaming tools. It
 enhances `read_file` so it can detect common text encodings and read both regular
@@ -430,14 +463,16 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_pdf.py
+python example_06_agent_pdf.py
 ```
 
-Use this example—not `agent.py`—when you want to read or rename PDF files.
+Use this example—not `example_01_agent.py`—when you want to read or rename PDF
+files.
 
-استخدم هذا المثال، وليس `agent.py`، عندما تريد قراءة ملفات PDF أو إعادة تسميتها.
+استخدم هذا المثال، وليس `example_01_agent.py`، عندما تريد قراءة ملفات PDF أو
+إعادة تسميتها.
 
-### `agent_multiple.py`
+### `example_07_agent_multiple.py`
 
 Example Seven introduces a second agent named `File Summarizer`. The main `File
 Assistant` keeps the previous tools and adds `write_file`, which creates a new
@@ -463,7 +498,7 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_multiple.py
+python example_07_agent_multiple.py
 ```
 
 Try this request:
@@ -474,13 +509,13 @@ Try this request:
 Read and summarize /path/to/file.txt, then save the summary as /path/to/summary.txt
 ```
 
-### `agent_gui.py`
+### `example_08_agent_gui.py`
 
-Example Eight is the final example. It gives the complete text-file assistant a
-desktop chat interface built with PySide6. The user can attach one or more file
-paths or a folder path, then ask the agent to list, read, rename, write, or
-summarize files. Attaching an item shares its local path with the agent; the
-agent uses its tools when it needs to inspect that path.
+Example Eight gives the complete text-file assistant a desktop chat interface
+built with PySide6. The user can attach one or more file paths or a folder path,
+then ask the agent to list, read, rename, write, or summarize files. Attaching an
+item shares its local path with the agent; the agent uses its tools when it needs
+to inspect that path.
 
 Each new conversation receives a unique chat ID. The chat list, IDs, and message
 history are stored in `gui_history.db`. Closing and reopening the application
@@ -488,11 +523,11 @@ restores the previous conversations, and switching chats gives the agent the
 memory belonging only to the selected chat ID. IDs are used internally and are
 not displayed in the interface.
 
-المثال الثامن هو المثال الأخير. يمنح مساعد الملفات النصية الكامل واجهة محادثة
-مكتبية مبنية باستخدام PySide6. يمكن للمستخدم إرفاق مسار ملف واحد أو عدة ملفات
-أو مسار مجلد، ثم طلب عرض الملفات أو قراءتها أو إعادة تسميتها أو كتابتها أو
-تلخيصها. يشارك الإرفاق المسار المحلي مع الوكيل، ويستخدم الوكيل أدواته عند حاجته
-إلى فحص ذلك المسار.
+يمنح المثال الثامن مساعد الملفات النصية الكامل واجهة محادثة مكتبية مبنية
+باستخدام PySide6. يمكن للمستخدم إرفاق مسار ملف واحد أو عدة ملفات أو مسار مجلد،
+ثم طلب عرض الملفات أو قراءتها أو إعادة تسميتها أو كتابتها أو تلخيصها. يشارك
+الإرفاق المسار المحلي مع الوكيل، ويستخدم الوكيل أدواته عند حاجته إلى فحص ذلك
+المسار.
 
 تحصل كل محادثة جديدة على معرّف محادثة فريد. تُحفظ قائمة المحادثات ومعرّفاتها
 وسجل الرسائل في `gui_history.db`. عند إغلاق التطبيق وفتحه من جديد، تظهر
@@ -504,7 +539,7 @@ Run it with:
 شغّله باستخدام:
 
 ```bash
-python agent_gui.py
+python example_08_agent_gui.py
 ```
 
 Use **Attach** to select files, folders, or both in the same picker. The selected
@@ -518,6 +553,27 @@ remove that conversation and its saved messages after confirming the warning.
 استخدام `Ctrl+Enter`. اضغط **New Chat** لبدء محادثة مستقلة ومحفوظة.
 انقر بزر الفأرة الأيمن على محادثة واختر **Delete Chat** لحذفها نهائياً مع
 رسائلها المحفوظة بعد تأكيد رسالة التحذير.
+
+### `example_08_1_agent_gui_stream.py`
+
+Example 8.1 keeps the complete desktop interface from Example Eight and streams
+the agent's response live. It uses `Runner.run_streamed` and displays each
+`ResponseTextDeltaEvent` as soon as it arrives. Attachments, saved conversations,
+and the separate `SQLiteSession` for each conversation continue to work in the
+same way.
+
+يحتفظ المثال 8.1 بواجهة سطح المكتب الكاملة من المثال الثامن، ويعرض إجابة الوكيل
+تدريجياً أثناء إنشائها. يستخدم `Runner.run_streamed` ويعرض كل
+`ResponseTextDeltaEvent` فور وصوله. وتستمر المرفقات والمحادثات المحفوظة وجلسة
+`SQLiteSession` المستقلة لكل محادثة في العمل بالطريقة نفسها.
+
+Run it with:
+
+شغّله باستخدام:
+
+```bash
+python example_08_1_agent_gui_stream.py
+```
 
 ### `hook.py`
 

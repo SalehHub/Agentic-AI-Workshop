@@ -1,9 +1,9 @@
-# Example Eight | المثال الثامن
+# Example 8.1 | المثال 8.1
 
-# This final example gives the file agent a desktop chat interface. Users can
-# attach paths, create saved conversations, and watch responses stream live.
-# يمنح هذا المثال الأخير وكيل الملفات واجهة محادثة مكتبية. يمكن للمستخدم إرفاق
-# المسارات وإنشاء عدة محادثات محفوظة ومشاهدة الإجابات تظهر مباشرة.
+# This example keeps the desktop interface from Example Eight and adds live
+# response streaming. Users can attach paths and create saved conversations.
+# يحتفظ هذا المثال بواجهة سطح المكتب من المثال الثامن ويضيف عرض الإجابة تدريجياً.
+# ويمكن للمستخدم إرفاق المسارات وإنشاء عدة محادثات محفوظة.
 
 import asyncio
 import json

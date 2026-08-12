@@ -1,9 +1,9 @@
 # Example Four | المثال الرابع
 
-# This example builds on agent_rename.py and shows how to select a model and
-# configure its behavior with ModelSettings.
-# يعتمد هذا المثال على agent_rename.py ويوضح كيفية اختيار النموذج وضبط سلوكه
-# باستخدام ModelSettings.
+# This example builds on example_03_agent_rename.py and shows how to select a
+# model and configure its behavior with ModelSettings.
+# يعتمد هذا المثال على example_03_agent_rename.py ويوضح كيفية اختيار النموذج
+# وضبط سلوكه باستخدام ModelSettings.
 
 from pathlib import Path
 
